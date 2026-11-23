@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="Proyecto Final Cucumber Suite" verbose="1">
+<!-- data-provider-thread-count="1": ejecución secuencial (más estable contra el demo público).
+     Subir a 2 o 3 para ejecutar escenarios en paralelo. -->
+<suite name="OrangeHRM Cucumber Suite" verbose="1" data-provider-thread-count="1">
 
     <test name="Cucumber Tests">
         <classes>

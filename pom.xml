@@ -4,9 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ar.org.proyecto-final</groupId>
-    <artifactId>ProyectoFinal_Arevalo</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>ar.com.sebastianarevalo</groupId>
+    <artifactId>qa-automation-selenium-orangehrm</artifactId>
+    <version>1.0.0</version>
+    <name>QA Automation - Selenium + Cucumber (OrangeHRM)</name>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -16,6 +17,7 @@
         <selenium.version>4.27.0</selenium.version>
         <cucumber.version>7.18.0</cucumber.version>
         <testng.version>7.8.0</testng.version>
+        <allure.version>2.29.0</allure.version>
     </properties>
 
     <dependencies>
@@ -29,18 +31,6 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>${selenium.version}</version>
-        </dependency>
-
-        <!-- ============================================================
-             WEBDRIVER MANAGER
-             ============================================================
-             Gestiona automáticamente los drivers de los navegadores.
-             Ya no necesitamos descargar chromedriver.exe manualmente.
-             ============================================================ -->
-        <dependency>
-            <groupId>io.github.bonigarcia</groupId>
-            <artifactId>webdrivermanager</artifactId>
-            <version>5.9.2</version>
         </dependency>
 
         <!-- ============================================================
@@ -87,6 +77,20 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ============================================================
+             ALLURE CUCUMBER
+             ============================================================
+             Plugin de Cucumber que genera los resultados de Allure
+             (target/allure-results) a partir de cada escenario.
+             Incluye las capturas adjuntas en los fallos.
+             ============================================================ -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-cucumber7-jvm</artifactId>
+            <version>${allure.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

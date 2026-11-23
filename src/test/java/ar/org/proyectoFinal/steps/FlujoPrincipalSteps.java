@@ -1,16 +1,16 @@
 package ar.org.proyectoFinal.steps;
 
-import ar.org.proyectoFinal.Pages.DashboardPage;
-import ar.org.proyectoFinal.Pages.LoginPage;
-import ar.org.proyectoFinal.Pages.PIMPage;
-import ar.org.proyectoFinal.runner.Hooks;
+import ar.org.proyectoFinal.config.ConfigReader;
+import ar.org.proyectoFinal.pages.DashboardPage;
+import ar.org.proyectoFinal.pages.LoginPage;
+import ar.org.proyectoFinal.pages.PIMPage;
+import ar.org.proyectoFinal.utils.DriverManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.testng.Assert;
 
 public class FlujoPrincipalSteps {
-
 
     private LoginPage loginPage;
     private DashboardPage dashboardPage;
@@ -22,28 +22,32 @@ public class FlujoPrincipalSteps {
 
     @Given("el usuario accede a OrangeHRM")
     public void elUsuarioAccedeAOrangeHRM() {
-        loginPage = new LoginPage(Hooks.driver);
+        loginPage = new LoginPage(DriverManager.getDriver());
         loginPage.goTo();
         Assert.assertTrue(loginPage.isOnLoginPage(), "La página de login no está visible");
     }
 
     @Given("el usuario esta logueado con usuario {string} y password {string}")
     public void elUsuarioEstaLogueadoConUsuarioYPassword(String usuario, String password) {
-        loginPage = new LoginPage(Hooks.driver);
+        loginPage = new LoginPage(DriverManager.getDriver());
         loginPage.goTo();
         dashboardPage = loginPage.loginAs(usuario, password);
         Assert.assertTrue(dashboardPage.isOnDashboard(),
                 "No se visualiza el dashboard después del login");
     }
 
-
     // -------------------------
     // WHEN
     // -------------------------
 
-    @When("ingresa credenciales validas")
-    public void ingresaCredencialesValidas() {
-        dashboardPage = loginPage.loginAs("Admin", "admin123");
+    @When("realiza login")
+    public void realizaLogin() {
+        dashboardPage = loginPage.loginAs(ConfigReader.get("username"), ConfigReader.get("password"));
+    }
+
+    @When("realiza login con usuario {string} y password {string}")
+    public void realizaLoginConUsuarioYPassword(String usuario, String password) {
+        dashboardPage = loginPage.loginAs(usuario, password);
     }
 
     @When("navega al modulo PIM")
@@ -57,21 +61,10 @@ public class FlujoPrincipalSteps {
         pimPage.searchEmployeeByName(nombreEmpleado);
     }
 
-    @When("realiza login")
-    public void realizaLogin() {
-        dashboardPage = loginPage.loginAs("Admin", "admin123");
-    }
-
     @When("cierra sesion")
     public void cierraSesion() {
         loginPage = dashboardPage.logout();
     }
-
-    @When("realiza login con usuario {string} y password {string}")
-    public void realizaLoginConUsuarioYPassword(String usuario, String password) {
-        dashboardPage = loginPage.loginAs(usuario, password);
-    }
-
 
     // -------------------------
     // THEN
@@ -84,15 +77,19 @@ public class FlujoPrincipalSteps {
 
     @Then("se muestran resultados")
     public void seMuestranResultados() {
-        boolean hayResultados = pimPage.hasResults();
-        boolean sinRegistros = pimPage.isNoRecordsDisplayed();
-
-        Assert.assertTrue(hayResultados || sinRegistros,
-                "No se encontraron resultados ni registro equivocado mostrado");
+        pimPage.waitForSearchToFinish();
+        Assert.assertTrue(pimPage.hasResults() || pimPage.isNoRecordsDisplayed(),
+                "La búsqueda no mostró resultados ni el mensaje de 'No Records Found'");
     }
 
     @Then("vuelve a la pagina de login")
     public void vuelveALaPaginaDeLogin() {
         Assert.assertTrue(loginPage.isOnLoginPage(), "No vuelve a la página de login después del logout");
+    }
+
+    @Then("se muestra el mensaje de error {string}")
+    public void seMuestraElMensajeDeError(String mensajeEsperado) {
+        Assert.assertTrue(loginPage.isErrorDisplayed(), "No se muestra el mensaje de error de login");
+        Assert.assertEquals(loginPage.getErrorMessage(), mensajeEsperado);
     }
 }

@@ -1,5 +1,6 @@
-package ar.org.proyectoFinal.Pages;
+package ar.org.proyectoFinal.pages;
 
+import ar.org.proyectoFinal.config.ConfigReader;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -15,7 +16,7 @@ public class BasePage {
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(ConfigReader.getInt("timeout.seconds")));
     }
 
     protected void click(By locator) {
@@ -27,8 +28,7 @@ public class BasePage {
                 ExpectedConditions.visibilityOfElementLocated(locator)
         );
         element.clear();
-        element.sendKeys(text
-        );
+        element.sendKeys(text);
     }
 
     protected String getText(By locator) {
