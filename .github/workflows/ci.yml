@@ -37,7 +37,7 @@ jobs:
       BROWSER: ${{ github.event.inputs.browser || 'chrome' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Configurar Java 17
         uses: actions/setup-java@v4
