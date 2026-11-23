@@ -1,4 +1,4 @@
-package ar.org.proyectoFinal.Pages;
+package ar.org.proyectoFinal.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

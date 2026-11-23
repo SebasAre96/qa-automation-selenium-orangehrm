@@ -1,5 +1,6 @@
-package ar.org.proyectoFinal.Pages;
+package ar.org.proyectoFinal.pages;
 
+import ar.org.proyectoFinal.config.ConfigReader;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -11,14 +12,12 @@ public class LoginPage extends BasePage {
     private By loginButton = By.cssSelector("button[type='submit']");
     private By errorMessage = By.cssSelector(".oxd-alert-content-text");
 
-    private static final String URL = "https://opensource-demo.orangehrmlive.com";
-
     public LoginPage(WebDriver driver) {
         super(driver);
     }
 
     public LoginPage goTo() {
-        driver.get(URL);
+        driver.get(ConfigReader.get("baseUrl"));
         return this;
     }
 

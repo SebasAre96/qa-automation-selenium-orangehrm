@@ -1,58 +1,43 @@
 package ar.org.proyectoFinal.runner;
 
+import ar.org.proyectoFinal.utils.DriverManager;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Hooks {
-
-    public static WebDriver driver;
 
     @Before
     public void setUp(Scenario scenario) {
         System.out.println("INICIANDO SCENARIO: " + scenario.getName());
-
-        WebDriverManager.chromedriver().setup();
-
-        ChromeOptions options = new ChromeOptions();
-
-        // Deshabilitar pantalla de selección de buscador
-        options.addArguments("--disable-search-engine-choice-screen");
-        // Deshabilitar notificaciones
-        options.addArguments("--disable-notifications");
-        // Deshabilitar barra de automatización
-        options.addArguments("--disable-infobars");
-        // Necesario para Selenium 4
-        options.addArguments("--remote-allow-origins=*");
-
-        Map<String, Object> prefs = new HashMap<>();
-        prefs.put("credentials_enable_service", false);
-        prefs.put("profile.password_manager_enabled", false);
-        prefs.put("profile.password_manager_leak_detection", false);
-        options.setExperimentalOption("prefs", prefs);
-
-        driver = new ChromeDriver(options);
-        driver.manage().window().maximize();
+        DriverManager.initDriver();
     }
 
     @After
     public void tearDown(Scenario scenario) {
-        if (scenario.isFailed()) {
-            System.out.println("SCENARIO FALLIDO: " + scenario.getName());
-        } else {
-            System.out.println("SCENARIO EXITOSO: " + scenario.getName());
+        try {
+            if (scenario.isFailed()) {
+                System.out.println("SCENARIO FALLIDO: " + scenario.getName());
+                attachScreenshot(scenario);
+            } else {
+                System.out.println("SCENARIO EXITOSO: " + scenario.getName());
+            }
+        } finally {
+            DriverManager.quitDriver();
         }
+    }
 
-        if (driver != null) {
-            driver.quit();
-            driver = null;
+    /** Adjunta una captura al reporte (Cucumber HTML y Allure) cuando el escenario falla. */
+    private void attachScreenshot(Scenario scenario) {
+        try {
+            WebDriver driver = DriverManager.getDriver();
+            byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+            scenario.attach(screenshot, "image/png", "Captura del fallo");
+        } catch (Exception e) {
+            System.out.println("No se pudo tomar la captura: " + e.getMessage());
         }
     }
 }

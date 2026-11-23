@@ -1,6 +1,16 @@
 # Maven
 target/
 
+# Reportes
+allure-results/
+allure-report/
+allure-history/
+
 # IntelliJ IDEA
 .idea/
 *.iml
+out/
+
+# Logs y temporales
+*.log
+.DS_Store
