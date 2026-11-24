@@ -26,7 +26,7 @@ public class DashboardPage extends BasePage {
     }
 
     public boolean isOnDashboard() {
-        return getCurrentUrl().contains("dashboard")
+        return waitForUrlContains("dashboard")
                 && isElementVisible(header);
     }
 

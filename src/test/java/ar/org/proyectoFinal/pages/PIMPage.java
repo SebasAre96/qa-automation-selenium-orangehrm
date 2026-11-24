@@ -1,9 +1,9 @@
 package ar.org.proyectoFinal.pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class PIMPage extends BasePage {
 
@@ -23,7 +23,9 @@ public class PIMPage extends BasePage {
         return this;
     }
 
-    /** Espera a que la búsqueda termine: aparece al menos un resultado o el mensaje "No Records Found". */
+    /**
+     * Espera a que la búsqueda termine: aparece al menos un resultado o el mensaje "No Records Found".
+     */
     public PIMPage waitForSearchToFinish() {
         wait.until(ExpectedConditions.or(
                 ExpectedConditions.visibilityOfElementLocated(resultRow),
@@ -45,6 +47,6 @@ public class PIMPage extends BasePage {
     }
 
     public boolean isOnPIMPage() {
-        return getCurrentUrl().contains("pim");
+        return waitForUrlContains("pim");
     }
 }
