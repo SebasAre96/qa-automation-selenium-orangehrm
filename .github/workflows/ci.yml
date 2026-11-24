@@ -70,17 +70,11 @@ jobs:
           if-no-files-found: warn
 
   report:
-    name: Publicar reporte Allure
+    name: Generar reporte Allure
     needs: test
-    # Se publica aunque fallen los tests, pero solo desde la rama principal
+    # Se genera aunque fallen los tests, pero solo desde la rama principal
     if: always() && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Descargar resultados de Allure
         uses: actions/download-artifact@v4
@@ -113,6 +107,18 @@ jobs:
         with:
           path: allure-report
 
+  deploy:
+    name: Publicar en GitHub Pages
+    needs: report
+    if: always() && needs.report.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Desplegar en GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
